@@ -1,32 +1,24 @@
-// Function to extract the Roblox user ID from the profile URL
-function getUserIdFromProfile() {
-    // Get all presence links
-    const presenceLinks = document.querySelectorAll('a.avatar-status');
-
-    presenceLinks.forEach(link => {
-        const href = link.getAttribute('href'); // Get href of the avatar-status link
-        if (href) {
-            // Extract the user ID from the URL
-            const match = href.match(/users\/(\d+)\//);
-            if (match && match[1]) {
-                const userId = match[1];
-                console.log(`User ID: ${userId}`); // Print the user ID to the console
-            }
-        }
-    });
-}
-
-// Function to check if the user is on a game page
-function checkIfOnGamePage() {
-    const gameTitle = document.title; // Get the title of the current page
-    // Check if the title contains " - Roblox"
-    if (gameTitle.includes(" - Roblox")) {
-        getUserIdFromProfile(); // Call the function to get the user ID
+// Function to log PresenceData from Local Storage
+function logPresenceData() {
+    const presenceData = localStorage.getItem('PresenceData');
+    if (presenceData) {
+        console.log(`PresenceData: ${presenceData}`);
+    } else {
+        console.log('No PresenceData found in Local Storage.');
     }
 }
 
-// Set an interval to check if the user is on a game page every second
-setInterval(checkIfOnGamePage, 1000);
+// Check if the current URL matches the target game URL
+const targetUrl = 'https://www.roblox.com/games/8737899170/Pet-Simulator-99';
+
+if (window.location.href === targetUrl) {
+    console.log(`You are on the target game page: ${targetUrl}`);
+    // Log PresenceData every second while on the page
+    setInterval(logPresenceData, 1000); // Log PresenceData every second
+} else {
+    console.log(`You are not on the target game page. Current URL: ${window.location.href}`);
+}
+
 
 
 
