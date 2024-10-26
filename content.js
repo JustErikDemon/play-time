@@ -1,60 +1,39 @@
-// Initialize an empty Set to store unique PlaceIds
-let playedGames = new Set();
+let playtime = 0; // Track playtime in seconds
+let playtimeInterval = null; // Reference to the interval
 
-// Load previously played games from localStorage
-if (localStorage.getItem("playedGames")) {
-    const savedGames = JSON.parse(localStorage.getItem("playedGames"));
-    savedGames.forEach((gameId) => playedGames.add(gameId));
+function startPlaytimeCounter() {
+    playtimeInterval = setInterval(() => {
+        playtime++;
+        console.log(`Playtime: ${playtime} seconds`);
+    }, 1000); // Update every second
 }
 
-// Function to save the played games to localStorage
-function savePlayedGames() {
-    localStorage.setItem("playedGames", JSON.stringify(Array.from(playedGames)));
+function stopPlaytimeCounter() {
+    clearInterval(playtimeInterval);
+    console.log(`User left the game. Total time spent: ${playtime} seconds`);
+    playtime = 0; // Reset playtime
 }
 
-// Function to track when a game is launched
-function trackGameLaunch(message) {
-    // Regex to capture the PlaceId from the console message
-    const regex = /placeId=(\d+)/;
-    const match = message.match(regex);
-    
-    if (match) {
-        const placeId = match[1];
+// Function to check if the player is in a specific game
+function checkGameStatus() {
+    const gameLink = document.querySelector('.avatar-status a'); // Get the avatar status link
 
-        // If the PlaceId is not already in the Set, add it and log the event
-        if (!playedGames.has(placeId)) {
-            playedGames.add(placeId);
-            savePlayedGames(); // Save the updated set to localStorage
-            console.log(`Game played! Total unique games played: ${playedGames.size}`);
-        } else {
-            console.log(`Already played game with PlaceId: ${placeId}`);
-        }
+    if (gameLink && gameLink.href.includes("PageType=Profile") && gameLink.href.includes("PlaceId=333")) {
+        // Replace 333 with the actual game ID you want to track
+        startPlaytimeCounter();
+    } else {
+        stopPlaytimeCounter();
     }
 }
 
-// Listen for console messages
-const originalConsoleLog = console.log;
-console.log = function (message) {
-    originalConsoleLog.call(console, message); // Call the original console.log
-    if (typeof message === "string" && message.includes("Launched external handler for 'roblox-player:")) {
-        trackGameLaunch(message);
-    }
-};
+// Observe changes in the DOM to check for changes in game status
+const observer = new MutationObserver(checkGameStatus);
+observer.observe(document.body, { childList: true, subtree: true });
 
-// Display the number of unique games played
-const displayElement = document.createElement("div");
-displayElement.style.position = "fixed";
-displayElement.style.bottom = "10px";
-displayElement.style.right = "10px";
-displayElement.style.padding = "5px 10px";
-displayElement.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-displayElement.style.color = "#fff";
-displayElement.style.borderRadius = "5px";
-displayElement.style.zIndex = "1000";
-document.body.appendChild(displayElement);
+// Initial check when the script loads
+checkGameStatus();
 
-// Update the display every second
-setInterval(() => {
-    displayElement.innerText = `Unique games played: ${playedGames.size}`;
-}, 1000);
+// Stop tracking when navigating away from the game page
+window.addEventListener("beforeunload", stopPlaytimeCounter);
+
 
