@@ -1,17 +1,14 @@
+let currentGameId = null;
+
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.url && changeInfo.url.includes("/games/")) {
-        chrome.storage.local.set({ currentGameStart: Date.now() });
-    } else if (changeInfo.url && !changeInfo.url.includes("/games/")) {
-        stopTrackingPlaytime();
+    if (changeInfo.status === 'complete' && tab.url.includes("/games/")) {
+        // When user enters a game page
+        const urlParts = tab.url.split("/");
+        currentGameId = urlParts[urlParts.length - 1]; // Get the Game ID from the URL
+        console.log(`Entered game with ID: ${currentGameId}`);
+    } else if (changeInfo.status === 'complete' && tab.url.includes("/users/")) {
+        // When user enters a profile page
+        currentGameId = null; // Reset game ID when navigating to a profile
+        console.log("User is on a profile page.");
     }
 });
-
-function stopTrackingPlaytime() {
-    chrome.storage.local.get(["currentGameStart"], (data) => {
-        if (data.currentGameStart) {
-            const playtime = Math.floor((Date.now() - data.currentGameStart) / 1000); // In seconds
-            console.log(`Total playtime: ${playtime} seconds`);
-            chrome.storage.local.remove("currentGameStart");
-        }
-    });
-}
