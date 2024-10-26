@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Roblox Playtime Tracker",
   "version": "1.0",
-  "permissions": ["activeTab"],
+  "permissions": ["tabs", "storage"],
   "background": {
     "service_worker": "background.js"
   },
@@ -11,5 +11,8 @@
       "matches": ["https://www.roblox.com/games/*"],
       "js": ["content.js"]
     }
-  ]
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
 }
