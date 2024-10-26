@@ -1,3 +1,9 @@
+// Initialize timer and playtime
+let timer;
+let playtime = 0;
+let points = parseInt(localStorage.getItem('points')) || 0; // Load points from localStorage
+let isPlaying = false;
+
 // Function to log PresenceData from Local Storage
 function logPresenceData() {
     const presenceData = localStorage.getItem('PresenceData');
@@ -43,10 +49,6 @@ function getGameIdFromUrl() {
 }
 
 // Start tracking playtime for the given gameId
-let timer;
-let playtime = 0;
-let isPlaying = false;
-
 function startTrackingPlaytime(gameId) {
     if (!isPlaying) {
         isPlaying = true;
@@ -84,7 +86,7 @@ function checkPresenceData(gameId) {
                     // Log the checking condition
                     console.log(`Checking... Game ID "${gameId}" with Data "Place ID: ${placeId}"`);
 
-                    if (placeId.toString() === gameId) {
+                    if (placeId && placeId.toString() === gameId) {
                         isStillPresent = true;
                         console.log(`Game ID "${gameId}" is still present in PresenceData.`);
                         break;
@@ -97,6 +99,9 @@ function checkPresenceData(gameId) {
             // Stop tracking if the gameId is no longer in PresenceData
             clearInterval(interval);
             console.log(`Playtime tracking stopped. Total playtime: ${playtime} seconds.`);
+            points += playtime; // Add playtime to points
+            localStorage.setItem('points', points); // Save points to localStorage
+            console.log(`You earned ${playtime} points! Total Points: ${points}`);
             isPlaying = false;
             clearInterval(timer); // Stop the timer
         }
@@ -105,14 +110,21 @@ function checkPresenceData(gameId) {
 
 // Check if the current URL matches the Roblox game URL format
 const gameUrlPattern = /https:\/\/www\.roblox\.com\/games\/(\d+)/;
+const pointsUrlPattern = /https:\/\/www\.roblox\.com\/Points/;
 
-if (gameUrlPattern.test(window.location.href)) {
+// Check if we are on the Points page to log points every second
+if (pointsUrlPattern.test(window.location.href)) {
+    setInterval(() => {
+        console.log(`Total Points: ${points}`);
+    }, 1000);
+} else if (gameUrlPattern.test(window.location.href)) {
     console.log(`You are on a Roblox game page: ${window.location.href}`);
     // Start checking PresenceData every second while on the page
     setInterval(logPresenceData, 1000);
 } else {
     console.log(`You are not on a Roblox game page. Current URL: ${window.location.href}`);
 }
+
 
 
 
