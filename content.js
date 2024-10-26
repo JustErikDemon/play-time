@@ -3,7 +3,7 @@ function logPresenceData() {
     const presenceData = localStorage.getItem('PresenceData');
     if (presenceData) {
         const presenceObject = JSON.parse(presenceData);
-        const placeId = getPlaceIdFromUrl();
+        const placeId = getPlaceIdFromUrl(); // Get the place ID from the URL
 
         // Print the entire PresenceData for debugging
         console.log('Checking... PresenceData:', presenceObject);
@@ -23,7 +23,7 @@ function logPresenceData() {
 // Get the Place ID from the current URL
 function getPlaceIdFromUrl() {
     const urlParts = window.location.href.split('/');
-    return urlParts[urlParts.length - 1]; // Assumes the ID is at the end of the URL
+    return urlParts[urlParts.length - 1]; // The ID is assumed to be the last segment of the URL
 }
 
 // Start tracking playtime for the given placeId
@@ -79,6 +79,7 @@ if (gameUrlPattern.test(window.location.href)) {
 } else {
     console.log(`You are not on a Roblox game page. Current URL: ${window.location.href}`);
 }
+
 
 
 
