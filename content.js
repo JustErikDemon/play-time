@@ -4,7 +4,10 @@ function logPresenceData() {
     if (presenceData) {
         const presenceObject = JSON.parse(presenceData);
         const placeId = getPlaceIdFromUrl();
-        
+
+        // Print the entire PresenceData for debugging
+        console.log('Checking... PresenceData:', presenceObject);
+
         // Check if the placeId exists in the PresenceData
         if (presenceObject && presenceObject[placeId]) {
             // If the placeId is found, start tracking the playtime
@@ -50,6 +53,9 @@ function checkPresenceData(placeId) {
         const presenceData = localStorage.getItem('PresenceData');
         const presenceObject = presenceData ? JSON.parse(presenceData) : null;
 
+        // Print the entire PresenceData for debugging
+        console.log('Checking... PresenceData:', presenceObject);
+
         if (!presenceObject || !presenceObject[placeId]) {
             // Stop tracking if the placeId is no longer in PresenceData
             clearInterval(interval);
@@ -70,6 +76,7 @@ if (gameUrlPattern.test(window.location.href)) {
 } else {
     console.log(`You are not on a Roblox game page. Current URL: ${window.location.href}`);
 }
+
 
 
 
