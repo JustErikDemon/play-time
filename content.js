@@ -1,44 +1,46 @@
 let playtime = 0; // Track playtime in seconds
-let playtimeInterval = null; // Reference to the interval
+let playtimeInterval = null; // Interval reference
+const GAME_ID = '8737602449'; // Replace with the actual game ID to track
+const CHECK_INTERVAL = 1000; // Check every second
 
-// Function to start the playtime counter
+// Function to check if the player is in the specified game
+function checkPlayerGame() {
+    const presenceLinks = document.querySelectorAll('a.avatar-status'); // Get presence links
+
+    presenceLinks.forEach(link => {
+        const href = link.getAttribute('href'); // Get href of the avatar-status link
+        // Check if the user is in the specified game
+        if (href && href.includes(`PlaceId=${GAME_ID}`)) {
+            return true; // Player is in the game
+        }
+    });
+
+    return false; // Player is not in the game
+}
+
+// Function to start tracking playtime
 function startPlaytimeCounter() {
-    if (playtimeInterval) return; // Prevent multiple intervals
     playtimeInterval = setInterval(() => {
-        playtime++;
-        console.log(`Playtime: ${playtime} seconds`);
-    }, 1000); // Update every second
+        if (checkPlayerGame()) {
+            playtime++;
+            console.log(`Playtime: ${playtime} seconds`);
+        } else {
+            // User left the game
+            console.log(`User left with ${playtime} seconds spent`);
+            stopPlaytimeCounter();
+        }
+    }, CHECK_INTERVAL);
 }
 
-// Function to stop the playtime counter
+// Function to stop tracking playtime
 function stopPlaytimeCounter() {
-    if (!playtimeInterval) return; // If there's no interval, do nothing
     clearInterval(playtimeInterval);
-    console.log(`User left the game. Total time spent: ${playtime} seconds`);
-    playtime = 0; // Reset playtime
+    playtime = 0; // Reset playtime when leaving the game
 }
 
-// Function to check if the player is in a specific game
-function checkGameStatus() {
-    const gameLink = document.querySelector('.avatar-status a'); // Get the avatar status link
+// Start the timer when the content script loads
+startPlaytimeCounter();
 
-    if (gameLink && gameLink.href.includes("PageType=Profile") && gameLink.href.includes("PlaceId=8737602449")) {
-        // Replace '8737602449' with the actual game ID you want to track
-        startPlaytimeCounter();
-    } else {
-        stopPlaytimeCounter();
-    }
-}
-
-// Observe changes in the DOM to check for changes in game status
-const observer = new MutationObserver(checkGameStatus);
-observer.observe(document.body, { childList: true, subtree: true });
-
-// Initial check when the script loads
-checkGameStatus();
-
-// Stop tracking when navigating away from the game page
-window.addEventListener("beforeunload", stopPlaytimeCounter);
 
 
 
