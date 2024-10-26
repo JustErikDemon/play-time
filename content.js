@@ -1,24 +1,16 @@
-// Set an interval to check for playtime updates every second
-let previousPlaytime = "";
+// Function to check and log playtime if available on the page
+function checkAndLogPlaytime() {
+    const playtimeElement = document.querySelector("#playTimeText");
 
-function checkPlaytime() {
-    // Select the playtime element by its ID
-    const playtimeElement = document.getElementById("playTimeText");
-
-    // If the playtime element is found, read its title attribute
     if (playtimeElement) {
-        const currentPlaytime = playtimeElement.title; // Gets the "34 minutes" text
-
-        // Log the playtime if it has changed since the last check
-        if (currentPlaytime !== previousPlaytime) {
-            console.log(`Playtime: ${currentPlaytime}`);
-            previousPlaytime = currentPlaytime;
-        }
+        const playtime = playtimeElement.getAttribute("title");
+        console.log(`Current playtime: ${playtime}`);
     } else {
-        console.log("Playtime element not found.");
+        console.log("Playtime information not available on this page.");
     }
 }
 
-// Run the checkPlaytime function every second
-setInterval(checkPlaytime, 1000);
+// Set an interval to check for playtime every second
+setInterval(checkAndLogPlaytime, 1000);
+
 
