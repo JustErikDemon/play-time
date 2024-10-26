@@ -10,10 +10,10 @@ function logPresenceData() {
 
         // Check if the placeId exists in the PresenceData
         if (presenceObject && presenceObject[placeId]) {
-            // If the placeId is found, start tracking the playtime
+            console.log(`Game ID ${placeId} is found in PresenceData. Starting playtime tracking...`);
             startTrackingPlaytime(placeId);
         } else {
-            console.log(`Checking... Place ID ${placeId} not found in PresenceData.`);
+            console.log(`Game ID ${placeId} is NOT found in PresenceData.`);
         }
     } else {
         console.log('No PresenceData found in Local Storage.');
@@ -34,7 +34,7 @@ let isPlaying = false;
 function startTrackingPlaytime(placeId) {
     if (!isPlaying) {
         isPlaying = true;
-        console.log(`Found Place ID ${placeId} in PresenceData. Starting playtime tracking...`);
+        console.log(`Found Game ID ${placeId} in PresenceData. Starting playtime tracking...`);
         
         // Log playtime every second
         timer = setInterval(() => {
@@ -56,12 +56,15 @@ function checkPresenceData(placeId) {
         // Print the entire PresenceData for debugging
         console.log('Checking... PresenceData:', presenceObject);
 
+        // Check if the placeId exists in the PresenceData
         if (!presenceObject || !presenceObject[placeId]) {
             // Stop tracking if the placeId is no longer in PresenceData
             clearInterval(interval);
             console.log(`Playtime tracking stopped. Total playtime: ${playtime} seconds.`);
             isPlaying = false;
             clearInterval(timer); // Stop the timer
+        } else {
+            console.log(`Game ID ${placeId} is still present in PresenceData. Continuing playtime tracking...`);
         }
     }, 1000);
 }
@@ -76,7 +79,6 @@ if (gameUrlPattern.test(window.location.href)) {
 } else {
     console.log(`You are not on a Roblox game page. Current URL: ${window.location.href}`);
 }
-
 
 
 
