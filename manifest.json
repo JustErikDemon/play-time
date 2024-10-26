@@ -8,7 +8,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.roblox.com/games/*"],
+      "matches": ["https://www.roblox.com/games/*", "https://www.roblox.com/users/*/profile"],
       "js": ["content.js"]
     }
   ],
