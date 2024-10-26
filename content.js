@@ -9,7 +9,7 @@ function logPresenceData() {
 }
 
 // Check if the current URL matches the target game URL
-const targetUrl = 'https://www.roblox.com/games/8737899170/Pet-Simulator-99';
+const targetUrl = 'https://www.roblox.com/home';
 
 if (window.location.href === targetUrl) {
     console.log(`You are on the target game page: ${targetUrl}`);
