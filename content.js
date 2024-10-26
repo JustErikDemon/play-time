@@ -41,3 +41,4 @@ checkGameStatus();
 window.addEventListener("beforeunload", stopPlaytimeCounter);
 
 
+
