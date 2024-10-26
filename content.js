@@ -9,11 +9,27 @@ function logPresenceData() {
         console.log('Checking... PresenceData:', presenceObject);
 
         // Check if the gameId exists in the PresenceData
-        if (presenceObject && presenceObject[gameId]) {
-            console.log(`Game ID ${gameId} is found in PresenceData. Starting playtime tracking...`);
-            startTrackingPlaytime(gameId);
-        } else {
-            console.log(`Game ID ${gameId} is NOT found in PresenceData.`);
+        let isMatchFound = false;
+
+        for (const userId in presenceObject) {
+            if (presenceObject.hasOwnProperty(userId)) {
+                const userPresence = presenceObject[userId].data;
+                const placeId = userPresence.placeId;
+
+                // Log the checking condition
+                console.log(`Checking... Game ID "${gameId}" with Data "Place ID: ${placeId}"`);
+
+                if (placeId.toString() === gameId) {
+                    isMatchFound = true;
+                    console.log(`Game ID "${gameId}" matches Place ID "${placeId}". Starting playtime tracking...`);
+                    startTrackingPlaytime(gameId);
+                    break;
+                }
+            }
+        }
+
+        if (!isMatchFound) {
+            console.log(`Game ID "${gameId}" is NOT found in PresenceData.`);
         }
     } else {
         console.log('No PresenceData found in Local Storage.');
@@ -34,7 +50,7 @@ let isPlaying = false;
 function startTrackingPlaytime(gameId) {
     if (!isPlaying) {
         isPlaying = true;
-        console.log(`Found Game ID ${gameId} in PresenceData. Starting playtime tracking...`);
+        console.log(`Found Game ID "${gameId}" in PresenceData. Starting playtime tracking...`);
         
         // Log playtime every second
         timer = setInterval(() => {
@@ -57,14 +73,32 @@ function checkPresenceData(gameId) {
         console.log('Checking... PresenceData:', presenceObject);
 
         // Check if the gameId exists in the PresenceData
-        if (!presenceObject || !presenceObject[gameId]) {
+        let isStillPresent = false;
+
+        if (presenceObject) {
+            for (const userId in presenceObject) {
+                if (presenceObject.hasOwnProperty(userId)) {
+                    const userPresence = presenceObject[userId].data;
+                    const placeId = userPresence.placeId;
+
+                    // Log the checking condition
+                    console.log(`Checking... Game ID "${gameId}" with Data "Place ID: ${placeId}"`);
+
+                    if (placeId.toString() === gameId) {
+                        isStillPresent = true;
+                        console.log(`Game ID "${gameId}" is still present in PresenceData.`);
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!isStillPresent) {
             // Stop tracking if the gameId is no longer in PresenceData
             clearInterval(interval);
             console.log(`Playtime tracking stopped. Total playtime: ${playtime} seconds.`);
             isPlaying = false;
             clearInterval(timer); // Stop the timer
-        } else {
-            console.log(`Game ID ${gameId} is still present in PresenceData. Continuing playtime tracking...`);
         }
     }, 1000);
 }
