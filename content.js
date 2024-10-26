@@ -18,7 +18,7 @@ function stopPlaytimeCounter() {
 function checkGameStatus() {
     const gameLink = document.querySelector('.avatar-status a'); // Get the avatar status link
 
-    if (gameLink && gameLink.href.includes("PageType=Profile") && gameLink.href.includes("PlaceId=333")) {
+    if (gameLink && gameLink.href.includes("PageType=Profile") && gameLink.href.includes("PlaceId=8737602449")) {
         // Replace 333 with the actual game ID you want to track
         startPlaytimeCounter();
     } else {
